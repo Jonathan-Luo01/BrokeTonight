@@ -32,14 +32,15 @@ jobs:
           cache: 'npm'
 
       - name: Install root dependencies
-        run: npm ci || npm install
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
       - name: Install client dependencies
-        run: cd client && (npm ci || npm install)
+        run: cd client && (npm ci --legacy-peer-deps || npm install --legacy-peer-deps)
 
       - name: Build client for GitHub Pages
         env:
           GITHUB_PAGES: "true"
+          VITE_API_URL: "https://broketonight-api.kingjonathanluo.workers.dev"
         run: |
           cd client
           npm run build
