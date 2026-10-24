@@ -16,7 +16,8 @@ export function ShareModal({ plan, onClose }: ShareModalProps) {
   if (!plan) return null;
 
   const encoded = encodePlan(plan);
-  const shareUrl = `${window.location.origin}/share?plan=${encoded}`;
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const shareUrl = `${window.location.origin}${basePath}/share?plan=${encoded}`;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(shareUrl);

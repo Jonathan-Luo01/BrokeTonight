@@ -72,6 +72,15 @@ npm run dev
 - **Frontend**: `http://localhost:5173`
 - **Backend API**: `http://localhost:3001`
 
+### 5. GitHub Pages Deployment
+
+The repository includes an automated GitHub Actions workflow (`.github/workflows/deploy.yml`) configured with client-side routing and fallback support:
+
+1. In your GitHub repository, go to **Settings** $\rightarrow$ **Pages**.
+2. Under **Build and deployment > Source**, select **GitHub Actions**.
+3. Push changes to `main` (or manually trigger the *Deploy to GitHub Pages* workflow in the Actions tab).
+4. The web app is automatically deployed to `https://<username>.github.io/BrokeTonight/`.
+
 ---
 
 ## Scripts

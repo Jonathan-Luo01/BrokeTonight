@@ -3,7 +3,8 @@ import type { DiscoveryFilters, DiscoveryResult } from './types';
 
 export async function discoverActivities(filters: DiscoveryFilters): Promise<DiscoveryResult> {
   try {
-    const response = await fetch('/api/discover', {
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    const response = await fetch(`${apiBase}/api/discover`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(filters),

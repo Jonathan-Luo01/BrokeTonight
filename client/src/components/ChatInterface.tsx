@@ -197,7 +197,8 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const apiBase = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${apiBase}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text }),
@@ -220,7 +221,33 @@ export function ChatInterface() {
         scrollToRoute();
       }, 350);
     } catch (err) {
-      console.error('Chat error:', err);
+      console.warn('Backend unavailable, falling back to client-curated route:', err);
+      const lower = text.toLowerCase();
+      if (
+        lower.includes('la jolla') ||
+        lower.includes('free') ||
+        lower.includes('beach') ||
+        lower.includes('cliff')
+      ) {
+        setCurrentRoute({
+          ...LA_JOLLA_PRESET,
+          prompt: text,
+        });
+        setScoutNote(
+          "Scout's pick: All stops on this coastal route have 100% free public admission. Perfect for sunset ocean views and night beach walks without spending a dime!"
+        );
+      } else {
+        setCurrentRoute({
+          ...CONVOY_PRESET,
+          prompt: text,
+        });
+        setScoutNote(
+          "Scout's pick: Keep costs low by sharing plates at Convoy's top spots and splitting a private karaoke room among 5 people to stay well under $40 each!"
+        );
+      }
+      setTimeout(() => {
+        scrollToRoute();
+      }, 350);
     } finally {
       setIsLoading(false);
     }

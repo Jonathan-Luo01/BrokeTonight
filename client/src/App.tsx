@@ -4,7 +4,7 @@ import { SharedPlanPage } from '@/pages/SharedPlanPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<DiscoveryPage initialMode="cards" />} />
         <Route path="/chat" element={<DiscoveryPage initialMode="chat" />} />
