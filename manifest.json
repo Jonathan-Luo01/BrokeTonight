@@ -1,0 +1,23 @@
+{
+  "name": "BrokeTonight",
+  "short_name": "BrokeTonight",
+  "description": "Bored? Broke? Real-time budget activity scout for college students.",
+  "start_url": "/BrokeTonight/",
+  "scope": "/BrokeTonight/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/BrokeTonight/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/BrokeTonight/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

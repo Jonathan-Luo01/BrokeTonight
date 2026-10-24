@@ -81,13 +81,21 @@ export function getAccurateImageForActivity(title: string, desc = ''): string {
   ) {
     return ACCURATE_IMAGES.boba;
   }
-  if (text.includes('gelato') || text.includes('ice cream') || text.includes('bobboi')) {
+  if (
+    text.includes('gelato') ||
+    text.includes('ice cream') ||
+    text.includes('bobboi') ||
+    text.includes('somisomi') ||
+    text.includes('taiyaki') ||
+    text.includes('soft serve')
+  ) {
     return ACCURATE_IMAGES.gelato;
   }
   if (
     text.includes('korean bbq') ||
     text.includes('kbbq') ||
     text.includes('olleh') ||
+    text.includes('friends house') ||
     text.includes('bbq grill') ||
     text.includes('bulgogi')
   ) {

@@ -1,5 +1,7 @@
 # BrokeTonight 🌙
 
+**[🌐 Launch Live Web App: https://jonathan-luo01.github.io/BrokeTonight/](https://jonathan-luo01.github.io/BrokeTonight/)**
+
 > Bored? Broke? Real-time budget activity scout for college students.
 
 BrokeTonight helps students find real, open, and verified things to do tonight without breaking the bank. Powered by **Google Gemini** and **Parallel Search MCP**, it scouts live venue hours, schedules, and costs across San Diego (La Jolla, Convoy District, Pacific Beach, Downtown, and Balboa Park).

@@ -453,13 +453,21 @@ function getAccurateImageForActivity(title: string, desc: string): string {
   ) {
     return ACCURATE_IMAGES.boba;
   }
-  if (text.includes('gelato') || text.includes('ice cream') || text.includes('bobboi')) {
+  if (
+    text.includes('gelato') ||
+    text.includes('ice cream') ||
+    text.includes('bobboi') ||
+    text.includes('somisomi') ||
+    text.includes('taiyaki') ||
+    text.includes('soft serve')
+  ) {
     return ACCURATE_IMAGES.gelato;
   }
   if (
     text.includes('korean bbq') ||
     text.includes('kbbq') ||
     text.includes('olleh') ||
+    text.includes('friends house') ||
     text.includes('bbq grill') ||
     text.includes('bulgogi')
   ) {
@@ -1366,49 +1374,52 @@ Make sure all coordinates are realistic for the specified city/area. If Convoy S
     if (isConvoy) {
       routeData = {
         prompt: userText,
-        title: 'Convoy District Food & Karaoke Crawl',
+        title: 'Convoy District Food, Dessert & Karaoke Crawl',
         subtitle:
-          'Asian street dinner, sweet Taiwanese dessert, and private karaoke rooms for 5 friends strictly under $40 total.',
+          'Family-style Korean BBQ platters, iconic SomiSomi taiyaki soft serve, and a private neon karaoke room for 5 friends strictly under $40.',
         timeBadge: '🕒 About 6 PM–11 PM',
         transitBadge: 'Convoy Plaza parking + walking',
         extraBadge: {
-          text: 'Under $40 per person',
+          text: '$38.50 per person',
           bg: '#FEF3C7',
           textCol: '#92400E',
         },
-        estimatedTotalBudget: '~$35 per person total ($175 for group of 5)',
-        costOverview: 'Dinner (~$20) + Boba/Dessert (~$7) + Karaoke share (~$8)',
+        estimatedTotalBudget: '$38.50 per person total ($192.50 total for 5)',
+        costOverview:
+          'Dinner ($20) + SomiSomi ($6.50) + Spot KTV room split ($12) = $38.50 per person',
         stops: [
           {
             id: 'c-1',
-            name: 'Olleh CONVOY Korean BBQ',
-            lat: 32.8225,
+            name: 'Friends House Korean BBQ & Grill',
+            lat: 32.8242,
             lng: -117.1558,
             time: '6:00 PM',
             duration: '90 min',
-            cost: '~$20–22/person',
-            costBreakdown: 'Family-style dinner share ~$20–22/person. Banchan included.',
+            cost: '~$20/person',
+            costBreakdown:
+              '$100 family-style dinner share (bulgogi, spicy pork, tofu soup & refillable banchan) split 5 ways (~$20 each)',
             description:
-              'Feast on brisket, pork belly, and endless banchan side dishes. Perfect for hungry groups of 5.',
-            transitNote: 'Walk 3 minutes north to Meet Fresh on Convoy St.',
+              'Sizzling Korean BBQ meat platters, spicy tofu stew, and unlimited complimentary banchan side dishes shared family-style among 5.',
+            transitNote: 'Walk 3 minutes north along Convoy St to SomiSomi.',
             imageUrl: ACCURATE_IMAGES.kbbq,
             sourceUrl: 'https://www.convoydistrict.com',
             visited: false,
           },
           {
             id: 'c-2',
-            name: 'Meet Fresh & Boba Bar',
+            name: 'SomiSomi Convoy (Taiyaki Soft Serve)',
             lat: 32.8315,
             lng: -117.1552,
             time: '7:45 PM',
             duration: '45 min',
-            cost: '~$6–7/person',
-            costBreakdown: 'Signature taro ball shaved ice or milk tea ~$6–7.',
+            cost: '$6.50/person',
+            costBreakdown:
+              'Signature Ah-Boong warm waffle cone with soft-serve swirl & Nutella/custard filling ($6.50)',
             description:
-              'Authentic Taiwanese shaved ice, taro balls, and craft milk tea for a sweet break.',
-            transitNote: 'Drive 2 minutes or walk down the strip to Spot KTV.',
-            imageUrl: ACCURATE_IMAGES.boba,
-            sourceUrl: 'https://www.meetfresh.us',
+              'Iconic Convoy sweet stop: freshly pressed fish-shaped waffle cones filled with Nutella or taro and swirled with ube/milk soft serve.',
+            transitNote: 'Drive 2 minutes or take a quick stroll down to Spot KTV.',
+            imageUrl: ACCURATE_IMAGES.gelato,
+            sourceUrl: 'https://www.somisomi.com',
             visited: false,
           },
           {
@@ -1418,11 +1429,13 @@ Make sure all coordinates are realistic for the specified city/area. If Convoy S
             lng: -117.1572,
             time: '8:45 PM',
             duration: '90 min',
-            cost: '~$7–8/person',
-            costBreakdown: '$35–40/hr private room split among 5 friends (~$7–8 each).',
+            cost: '$12/person',
+            costBreakdown:
+              'Standard room rate ($60/hr) split 5 ways = $12 each for an hour of singing',
             description:
-              'Private group karaoke room with neon lounge lighting and thousands of classic and modern hits.',
-            transitNote: 'End of night in Convoy. Easy rideshare pickup right outside.',
+              'Private group karaoke room with neon lounge lighting, thousands of classic and modern hits, and disco effects.',
+            transitNote:
+              'Wrap up the night right here on Convoy. Easy rideshare pickup right outside.',
             imageUrl: ACCURATE_IMAGES.arcade,
             sourceUrl: 'https://findkaraoke.net/san-diego',
             visited: false,
@@ -1430,7 +1443,7 @@ Make sure all coordinates are realistic for the specified city/area. If Convoy S
         ],
       };
       summaryText =
-        'Convoy is San Diego’s top Asian culinary hub. Splitting dinner family-style and sharing a private karaoke room keeps total cumulative costs around $35/person, comfortably under your $40 budget for 5.';
+        'Convoy is San Diego’s top Asian culinary hub. Splitting family-style BBQ platters at Friends House ($20), grabbing SomiSomi taiyaki soft serve ($6.50), and sharing Spot KTV’s private room ($12) keeps the verified total at $38.50 per person — strictly under your $40 budget for 5.';
     } else if (
       userText.toLowerCase().includes('la jolla') ||
       userText.toLowerCase().includes('ucsd') ||

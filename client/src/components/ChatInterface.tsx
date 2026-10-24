@@ -84,50 +84,51 @@ const LA_JOLLA_PRESET: RoutePlan = {
 const CONVOY_PRESET: RoutePlan = {
   prompt:
     'Find weekend activities for a group of 5 people under $40 each in the Convoy area in San Diego tonight.',
-  title: 'Tonight in Convoy, San Diego',
+  title: 'Convoy District Food, Dessert & Karaoke Crawl',
   subtitle:
-    'An epic group night out featuring Korean BBQ dinner, authentic Taiwanese shaved ice, and private room karaoke strictly within your $40 budget.',
+    'Family-style Korean BBQ platters, iconic SomiSomi taiyaki soft serve, and a private neon karaoke room for 5 friends strictly under $40.',
   timeBadge: '🕒 About 6 PM–11 PM',
-  transitBadge: 'Drive + Convoy Parking',
+  transitBadge: 'Convoy Plaza parking + walking',
   extraBadge: {
-    text: 'Under $40 per person',
+    text: '$38.50 per person',
     bg: '#FEF3C7',
     textCol: '#92400E',
   },
-  estimatedTotalBudget: '~$34–38 per person total (Strictly under $40)',
-  costOverview:
-    'KBBQ feast (~$20–22) + Meet Fresh dessert (~$6–7) + Karaoke split 5 ways (~$7–8) = ~$34–38 total',
+  estimatedTotalBudget: '$38.50 per person total ($192.50 total for 5)',
+  costOverview: 'Dinner ($20) + SomiSomi ($6.50) + Spot KTV room split ($12) = $38.50 per person',
   stops: [
     {
       id: 'c-1',
-      name: 'Olleh CONVOY Korean BBQ',
-      lat: 32.8225,
+      name: 'Friends House Korean BBQ & Grill',
+      lat: 32.8242,
       lng: -117.1558,
       time: '6:00 PM',
       duration: '90 min',
-      cost: '~$20–22/person',
-      costBreakdown: 'Group feast with bulgogi, pork belly, and banchan side dishes',
+      cost: '~$20/person',
+      costBreakdown:
+        '$100 family-style dinner share (bulgogi, spicy pork, tofu soup & refillable banchan) split 5 ways (~$20 each)',
       description:
-        'Sizzling Korean barbecue feast with premium meats and unlimited banchan side dishes. Perfect for hungry groups of 5.',
-      transitNote: 'Walk 3 minutes north along Convoy St to Meet Fresh.',
+        'Sizzling Korean BBQ meat platters, spicy tofu stew, and unlimited complimentary banchan side dishes shared family-style among 5.',
+      transitNote: 'Walk 3 minutes north along Convoy St to SomiSomi.',
       imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80',
       sourceUrl: 'https://www.convoydistrict.com',
       visited: false,
     },
     {
       id: 'c-2',
-      name: 'Meet Fresh & Boba Bar',
+      name: 'SomiSomi Convoy (Taiyaki Soft Serve)',
       lat: 32.8315,
       lng: -117.1552,
       time: '7:45 PM',
       duration: '45 min',
-      cost: '~$6–7/person',
-      costBreakdown: 'Signature taro ball shaved ice or craft milk tea ~$6–7',
+      cost: '$6.50/person',
+      costBreakdown:
+        'Signature Ah-Boong warm waffle cone with soft-serve swirl & Nutella/custard filling ($6.50)',
       description:
-        'Authentic Taiwanese shaved ice with taro balls and craft milk tea for a sweet post-dinner break.',
+        'Iconic Convoy sweet stop: freshly pressed fish-shaped waffle cones filled with Nutella or taro and swirled with ube/milk soft serve.',
       transitNote: 'Drive 2 minutes or take a quick stroll down to Spot KTV.',
-      imageUrl: 'https://images.unsplash.com/photo-1541658016709-82535e94bc69?w=600&q=80',
-      sourceUrl: 'https://www.meetfresh.us',
+      imageUrl: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&q=80',
+      sourceUrl: 'https://www.somisomi.com',
       visited: false,
     },
     {
@@ -137,12 +138,12 @@ const CONVOY_PRESET: RoutePlan = {
       lng: -117.1572,
       time: '8:45 PM',
       duration: '90 min',
-      cost: '~$7–8/person',
-      costBreakdown: 'Private room rate ($35–40/hr) split 5 ways = ~$7–8/person',
+      cost: '$12/person',
+      costBreakdown: 'Standard room rate ($60/hr) split 5 ways = $12 each for an hour of singing',
       description:
-        'Private group karaoke room with neon lounge lighting and thousands of classic and modern hits.',
+        'Private group karaoke room with neon lounge lighting, thousands of classic and modern hits, and disco effects.',
       transitNote: 'Wrap up the night right here on Convoy. Easy rideshare pickup right outside.',
-      imageUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80',
       sourceUrl: 'https://findkaraoke.net/san-diego',
       visited: false,
     },
@@ -155,7 +156,7 @@ export function ChatInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [scoutNote, setScoutNote] = useState<string | null>(
-    "Scout's pick: Keep costs low by sharing plates at Convoy's top spots and splitting a private karaoke room among 5 people to stay well under $40 each!"
+    "Scout's pick: Split family-style BBQ platters with endless banchan at Friends House ($20), grab SomiSomi taiyaki soft serve ($6.50), and split Spot KTV's $60/hr private room 5 ways ($12). Real total: $38.50 each — comfortably under your $40 budget!"
   );
   const [sources, setSources] = useState<Array<{ title: string; url: string }>>([
     {
@@ -242,7 +243,7 @@ export function ChatInterface() {
           prompt: text,
         });
         setScoutNote(
-          "Scout's pick: Keep costs low by sharing plates at Convoy's top spots and splitting a private karaoke room among 5 people to stay well under $40 each!"
+          "Scout's pick: Split family-style BBQ platters with endless banchan at Friends House ($20), grab SomiSomi taiyaki soft serve ($6.50), and split Spot KTV's $60/hr private room 5 ways ($12). Real total: $38.50 each — comfortably under your $40 budget!"
         );
       }
       setTimeout(() => {
@@ -269,7 +270,7 @@ export function ChatInterface() {
             onClick={() => {
               setCurrentRoute(CONVOY_PRESET);
               setScoutNote(
-                "Scout's pick: Keep costs low by sharing plates at Convoy's top spots and splitting a private karaoke room among 5 people to stay well under $40 each!"
+                "Scout's pick: Split family-style BBQ platters with endless banchan at Friends House ($20), grab SomiSomi taiyaki soft serve ($6.50), and split Spot KTV's $60/hr private room 5 ways ($12). Real total: $38.50 each — comfortably under your $40 budget!"
               );
             }}
             className={`text-xs px-3 py-1 rounded-full font-medium transition-colors ${

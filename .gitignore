@@ -25,6 +25,9 @@ ehthumbs.db
 Thumbs.db
 **/.DS_Store
 
+# Cloudflare
+.wrangler
+
 # Editor directories and files
 *.suo
 *.ntvs*
