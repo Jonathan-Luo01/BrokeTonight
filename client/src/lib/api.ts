@@ -3,7 +3,8 @@ import type { DiscoveryFilters, DiscoveryResult } from './types';
 
 export async function discoverActivities(filters: DiscoveryFilters): Promise<DiscoveryResult> {
   try {
-    const apiBase = import.meta.env.VITE_API_URL || '';
+    const apiBase =
+      import.meta.env.VITE_API_URL || 'https://broketonight-api.kingjonathanluo.workers.dev';
     const response = await fetch(`${apiBase}/api/discover`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

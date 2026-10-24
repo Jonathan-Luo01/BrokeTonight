@@ -9,11 +9,13 @@ interface FilterBarProps {
   isLoading: boolean;
 }
 
-const LOCATIONS = [
+const POPULAR_LOCATIONS = [
   'UCSD / La Jolla, CA',
   'Convoy District, SD',
-  'Pacific Beach, CA',
-  'Downtown San Diego, CA',
+  'UC Berkeley, CA',
+  'Austin, TX',
+  'NYC / Brooklyn, NY',
+  'Seattle, WA',
 ];
 
 const BUDGET_STEPS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
@@ -36,7 +38,8 @@ const VIBES: { value: Vibe; icon: typeof Compass; label: string }[] = [
 ];
 
 export function FilterBar({ onDiscover, isLoading }: FilterBarProps) {
-  const [location, setLocation] = useState(LOCATIONS[0]);
+  const [location, setLocation] = useState(POPULAR_LOCATIONS[0]);
+  const [customInput, setCustomInput] = useState('');
   const [budget, setBudget] = useState<Budget>(15);
   const [vibe, setVibe] = useState<Vibe>('Adventurous');
   const [groupSize, setGroupSize] = useState(3);
@@ -46,26 +49,51 @@ export function FilterBar({ onDiscover, isLoading }: FilterBarProps) {
   return (
     <div className="w-full max-w-3xl mx-auto px-4 p-6 bg-white rounded-3xl border border-neutral-200/80 shadow-xs space-y-6">
       {/* Location */}
-      <div className="space-y-2">
-        <label className="flex items-center gap-2 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-          <MapPin className="w-3.5 h-3.5 text-neutral-700" /> Location / Neighborhood
-        </label>
-        <div className="flex gap-2 flex-wrap">
-          {LOCATIONS.map((loc) => (
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 text-xs font-bold text-neutral-500 uppercase tracking-wider">
+            <MapPin className="w-3.5 h-3.5 text-neutral-700" /> Location / Any City Worldwide
+          </label>
+          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60">
+            Global Scout Active
+          </span>
+        </div>
+
+        {/* Quick Location Pills */}
+        <div className="flex gap-1.5 sm:gap-2 flex-wrap">
+          {POPULAR_LOCATIONS.map((loc) => (
             <button
               key={loc}
               type="button"
-              onClick={() => setLocation(loc)}
+              onClick={() => {
+                setLocation(loc);
+                setCustomInput('');
+              }}
               className={cn(
-                'px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all',
-                location === loc
+                'px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all',
+                location === loc && !customInput
                   ? 'bg-neutral-900 text-white shadow-xs'
                   : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
               )}
             >
-              {loc}
+              {loc.split(',')[0]}
             </button>
           ))}
+        </div>
+
+        {/* Custom Location Search Input */}
+        <div className="relative mt-2">
+          <input
+            type="text"
+            placeholder="Or type any city, campus, or neighborhood worldwide (e.g. Austin, Tokyo, Boston)..."
+            value={customInput}
+            onChange={(e) => {
+              setCustomInput(e.target.value);
+              setLocation(e.target.value.trim() || POPULAR_LOCATIONS[0]);
+            }}
+            className="w-full h-10 pl-9 pr-4 rounded-full border border-neutral-200/90 bg-neutral-50/80 text-xs sm:text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400 placeholder:text-neutral-400 transition-all"
+          />
+          <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3.5 top-3.5 pointer-events-none" />
         </div>
       </div>
 

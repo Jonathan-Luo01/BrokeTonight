@@ -54,7 +54,7 @@ export const SEED_ACTIVITIES: Activity[] = [
     distanceFromCampus: 'On campus',
     operatingHours: 'Event-dependent, typically 7pm–midnight',
     ageRestriction: 'All ages (some 21+ events)',
-    sourceUrl: 'https://hdh.ucsd.edu/theloft',
+    sourceUrl: 'https://theloft.ucsd.edu',
     imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80',
     geminiScoutNotes:
       'Best kept secret on campus. Themed nights like trivia, karaoke, and open mic are legendary.',

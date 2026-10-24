@@ -1,7 +1,8 @@
-import { ArrowDown, ArrowUp, Check, ExternalLink, Globe, Lightbulb, RefreshCw } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, Compass, ExternalLink, Globe, Lightbulb, RefreshCw, Sparkles } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { OpenUIMap, type RouteStop } from '@/components/openui/OpenUIMap';
 import { getAccurateImageForActivity } from '@/lib/accurate-images';
+import { resolveWorkingLink } from '@/lib/verified-links';
 
 interface RoutePlan {
   prompt: string;
@@ -155,6 +156,8 @@ export function ChatInterface() {
   const [selectedStopId, setSelectedStopId] = useState<string | undefined>(undefined);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [streamingText, setStreamingText] = useState('');
+  const [activePrompt, setActivePrompt] = useState<string | null>(null);
   const [scoutNote, setScoutNote] = useState<string | null>(
     "Scout's pick: Split family-style BBQ platters with endless banchan at Friends House ($20), grab SomiSomi taiyaki soft serve ($6.50), and split Spot KTV's $60/hr private room 5 ways ($12). Real total: $38.50 each — comfortably under your $40 budget!"
   );
@@ -189,34 +192,71 @@ export function ChatInterface() {
     const text = (queryText || input).trim();
     if (!text || isLoading) return;
 
-    // Immediately update prompt bubble so the user sees their query reflected right away
-    setCurrentRoute((prev) => ({
-      ...prev,
-      prompt: text,
-    }));
+    setActivePrompt(text);
     setInput('');
     setIsLoading(true);
+    setStreamingText('');
 
     try {
-      const apiBase = import.meta.env.VITE_API_URL || '';
+      const apiBase =
+        import.meta.env.VITE_API_URL || 'https://broketonight-api.kingjonathanluo.workers.dev';
       const response = await fetch(`${apiBase}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+        },
+        body: JSON.stringify({ message: text, stream: true }),
       });
 
       if (!response.ok) {
         throw new Error(`Chat error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('text/event-stream') && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
 
-      if (data.route && Array.isArray(data.route.stops) && data.route.stops.length > 0) {
-        setCurrentRoute(data.route);
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith('data:')) continue;
+            const dataStr = trimmed.slice(5).trim();
+            if (dataStr === '[DONE]') continue;
+
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed.type === 'token' && parsed.text) {
+                setStreamingText((prev) => prev + parsed.text);
+              } else if (parsed.type === 'route' && parsed.route) {
+                setCurrentRoute(parsed.route);
+                if (parsed.summary) setScoutNote(parsed.summary);
+                if (parsed.sources) setSources(parsed.sources);
+                setIsLoading(false);
+              }
+            } catch {
+              // ignore partial chunk json errors
+            }
+          }
+        }
+      } else {
+        const data = await response.json();
+        if (data.route && Array.isArray(data.route.stops) && data.route.stops.length > 0) {
+          setCurrentRoute(data.route);
+        }
+        setScoutNote(data.message?.content || null);
+        setSources(data.sources || []);
+        setIsLoading(false);
       }
-
-      setScoutNote(data.message?.content || null);
-      setSources(data.sources || []);
 
       setTimeout(() => {
         scrollToRoute();
@@ -267,13 +307,9 @@ export function ChatInterface() {
           </span>
           <button
             type="button"
-            onClick={() => {
-              setCurrentRoute(CONVOY_PRESET);
-              setScoutNote(
-                "Scout's pick: Split family-style BBQ platters with endless banchan at Friends House ($20), grab SomiSomi taiyaki soft serve ($6.50), and split Spot KTV's $60/hr private room 5 ways ($12). Real total: $38.50 each — comfortably under your $40 budget!"
-              );
-            }}
-            className={`text-xs px-3 py-1 rounded-full font-medium transition-colors ${
+            onClick={() => handleSend(CONVOY_PRESET.prompt)}
+            disabled={isLoading}
+            className={`text-xs px-3 py-1 rounded-full font-medium transition-colors disabled:opacity-50 ${
               currentRoute.title.includes('Convoy')
                 ? 'bg-neutral-950 text-white'
                 : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
@@ -283,13 +319,9 @@ export function ChatInterface() {
           </button>
           <button
             type="button"
-            onClick={() => {
-              setCurrentRoute(LA_JOLLA_PRESET);
-              setScoutNote(
-                "Scout's pick: All stops on this coastal route have 100% free public admission. Perfect for sunset ocean views and night beach walks without spending a dime!"
-              );
-            }}
-            className={`text-xs px-3 py-1 rounded-full font-medium transition-colors ${
+            onClick={() => handleSend(LA_JOLLA_PRESET.prompt)}
+            disabled={isLoading}
+            className={`text-xs px-3 py-1 rounded-full font-medium transition-colors disabled:opacity-50 ${
               currentRoute.title.includes('La Jolla')
                 ? 'bg-neutral-950 text-white'
                 : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
@@ -315,19 +347,87 @@ export function ChatInterface() {
       {/* 1. User Prompt Pill (Top Right, matching OpenUI screenshot) */}
       <div className="flex justify-end mb-6">
         <div className="inline-block bg-neutral-950 text-white text-[14px] sm:text-[15px] font-normal px-5 py-2.5 rounded-full shadow-sm max-w-xl text-right leading-snug">
-          {currentRoute.prompt}
+          {activePrompt || currentRoute.prompt}
         </div>
       </div>
 
-      {/* 2. Title & Subtitle */}
-      <div className="mb-4">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-950">
-          {currentRoute.title}
-        </h1>
-        <p className="mt-2 text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl">
-          {currentRoute.subtitle}
-        </p>
-      </div>
+      {isLoading ? (
+        /* SKELETON SCREEN LOADER WHILE PLANNING / STREAMING */
+        <div className="space-y-6 animate-in fade-in duration-300">
+          {/* Live Streaming Scout Tip Box */}
+          <div className="px-5 py-4 bg-amber-50/90 border border-amber-200/90 rounded-2xl flex items-start gap-3 shadow-xs">
+            <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-700 animate-spin" />
+            </div>
+            <div className="flex-1 text-xs sm:text-sm text-amber-950">
+              <div className="flex items-center gap-1.5 font-bold text-amber-900 mb-0.5">
+                <span>Gemini AI Scout</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] font-normal text-amber-800">Scouting in real time...</span>
+              </div>
+              <p className="leading-relaxed">
+                {streamingText || "Searching local spots, verifying tonight's hours, and mapping coordinates..."}
+                <span className="inline-block w-1.5 h-4 ml-1 bg-amber-600 animate-pulse align-middle" />
+              </p>
+            </div>
+          </div>
+
+          {/* Skeleton Title & Badges */}
+          <div className="space-y-3">
+            <div className="h-9 sm:h-11 w-3/4 max-w-lg bg-neutral-200/70 rounded-xl animate-pulse" />
+            <div className="h-5 w-full max-w-2xl bg-neutral-100 rounded-lg animate-pulse" />
+            <div className="flex flex-wrap gap-2 pt-1">
+              <div className="h-7 w-28 bg-neutral-100 rounded-full animate-pulse" />
+              <div className="h-7 w-32 bg-neutral-100 rounded-full animate-pulse" />
+              <div className="h-7 w-24 bg-neutral-100 rounded-full animate-pulse" />
+            </div>
+          </div>
+
+          {/* Skeleton Interactive Map with Radar Sweep Animation */}
+          <div className="relative h-[380px] w-full rounded-2xl bg-neutral-100/90 border border-neutral-200/80 overflow-hidden flex flex-col items-center justify-center gap-3">
+            <div className="relative flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full border border-neutral-300 animate-ping opacity-25" />
+              <div className="absolute w-12 h-12 rounded-full bg-neutral-900 flex items-center justify-center text-white shadow-md">
+                <Compass className="w-6 h-6 animate-spin text-amber-400" />
+              </div>
+            </div>
+            <p className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+              Mapping route stops & live pins...
+            </p>
+          </div>
+
+          {/* Skeleton Stop Cards */}
+          <div className="space-y-4 pt-2">
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                className="bg-white rounded-2xl border border-neutral-200/80 p-5 flex flex-col sm:flex-row gap-5 animate-pulse"
+              >
+                <div className="w-full sm:w-56 h-36 rounded-xl bg-neutral-200/60 shrink-0" />
+                <div className="flex-1 space-y-3 w-full py-1">
+                  <div className="flex justify-between items-center">
+                    <div className="h-5 w-40 bg-neutral-200/70 rounded-md" />
+                    <div className="h-6 w-20 bg-neutral-100 rounded-full" />
+                  </div>
+                  <div className="h-4 w-full bg-neutral-100 rounded-md" />
+                  <div className="h-4 w-3/4 bg-neutral-100 rounded-md" />
+                  <div className="h-3 w-48 bg-neutral-100 rounded-md pt-2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* 2. Title & Subtitle */}
+          <div className="mb-4">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-950">
+              {currentRoute.title}
+            </h1>
+            <p className="mt-2 text-base sm:text-lg text-neutral-700 leading-relaxed max-w-3xl">
+              {currentRoute.subtitle}
+            </p>
+          </div>
 
       {/* 3. Badges Row with Estimated Price Overview */}
       <div className="flex flex-wrap items-center gap-2.5 mb-6">
@@ -529,24 +629,32 @@ export function ChatInterface() {
                 </button>
 
                 {/* Event & Official Source Verification Link */}
-                {stop.sourceUrl && (
-                  <a
-                    href={stop.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-xs font-semibold text-neutral-800 transition-colors border border-neutral-200/80 shadow-xs"
-                    title="Check official venue site, showtimes, tickets, or schedule"
-                  >
-                    <span>Check Event & Details</span>
-                    <ExternalLink className="w-3 h-3 text-neutral-500" />
-                  </a>
-                )}
+                {(() => {
+                  const verifiedLink = resolveWorkingLink({
+                    title: stop.name,
+                    sourceUrl: stop.sourceUrl,
+                  });
+                  return (
+                    <a
+                      href={verifiedLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200 text-xs font-semibold text-neutral-800 transition-colors border border-neutral-200/80 shadow-xs"
+                      title="Check official venue site, showtimes, tickets, or schedule"
+                    >
+                      <span>Check Event & Details</span>
+                      <ExternalLink className="w-3 h-3 text-neutral-500" />
+                    </a>
+                  );
+                })()}
               </div>
             </div>
           );
         })}
       </div>
+      </>
+      )}
 
       {/* 8. Floating Scroll to Bottom Arrow + Floating Pill Composer (Matching screenshots) */}
       <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-3 sm:px-4 z-50 pb-[env(safe-area-inset-bottom,0px)]">
@@ -574,7 +682,7 @@ export function ChatInterface() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask anything..."
+            placeholder="Ask anything (e.g. $25 night in Austin, cheap route in Berkeley, $15 night in NYC)..."
             disabled={isLoading}
             className="flex-1 bg-transparent text-base sm:text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none disabled:opacity-50 min-w-0"
           />

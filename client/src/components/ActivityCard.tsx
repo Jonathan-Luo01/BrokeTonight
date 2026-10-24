@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Clock, ExternalLink, MapPin, Share2, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getAccurateImageForActivity } from '@/lib/accurate-images';
+import { resolveWorkingLink } from '@/lib/verified-links';
 import type { Activity, Budget } from '@/lib/types';
 
 interface ActivityCardProps {
@@ -98,18 +99,21 @@ export function ActivityCard({ activity, index, groupSize, onSelectPlan }: Activ
           </div>
 
           <div className="flex items-center gap-2">
-            {activity.sourceUrl && (
-              <a
-                href={activity.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="h-9 px-3 rounded-full border border-neutral-200 flex items-center gap-1 text-xs font-semibold text-neutral-700 hover:text-black hover:bg-neutral-50 transition-colors shadow-2xs"
-                title="Verify event, tickets, or official venue details"
-              >
-                <span>Check Event</span>
-                <ExternalLink className="w-3.5 h-3.5 text-neutral-500" />
-              </a>
-            )}
+            {(() => {
+              const workingUrl = resolveWorkingLink(activity);
+              return (
+                <a
+                  href={workingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-9 px-3 rounded-full border border-neutral-200 flex items-center gap-1 text-xs font-semibold text-neutral-700 hover:text-black hover:bg-neutral-50 transition-colors shadow-2xs"
+                  title="Verify event, tickets, or official venue details"
+                >
+                  <span>Check Event</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-neutral-500" />
+                </a>
+              );
+            })()}
             <Button
               onClick={() => onSelectPlan(activity)}
               className="h-9 px-4 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5"

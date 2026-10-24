@@ -53,12 +53,13 @@ export function OpenUIMap({ stops, selectedStopId, onSelectStop, height = 360 }:
       // Attribution control without the Leaflet Ukraine flag prefix
       L.control.attribution({ prefix: false }).addTo(map);
 
-      // Esri World Topo Map (Matches OpenUI screenshot tile attribution)
+      // Fast, mobile-compatible OpenStreetMap / CARTO Voyager tiles with Retina support
       L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         {
-          attribution: 'Tiles &copy; Esri &middot; OpenStreetMap contributors',
-          maxZoom: 18,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19,
         }
       ).addTo(map);
 
@@ -66,6 +67,15 @@ export function OpenUIMap({ stops, selectedStopId, onSelectStop, height = 360 }:
     }
 
     const map = mapInstanceRef.current;
+
+    // Mobile resize observer so map recalculates dimensions as soon as mobile view renders
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
 
     // Clear existing markers & lines
     for (const m of markersRef.current) {
@@ -150,8 +160,19 @@ export function OpenUIMap({ stops, selectedStopId, onSelectStop, height = 360 }:
       // Fallback
     }
 
-    const timer = setTimeout(() => map.invalidateSize(), 200);
-    return () => clearTimeout(timer);
+    // Staggered size invalidation to guarantee full tile loading across mobile WebKit renders
+    const t1 = setTimeout(() => map.invalidateSize(), 50);
+    const t2 = setTimeout(() => map.invalidateSize(), 300);
+    const t3 = setTimeout(() => map.invalidateSize(), 800);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
   }, [stops, selectedStopId, onSelectStop]);
 
   const handleRecenter = () => {
@@ -179,7 +200,7 @@ export function OpenUIMap({ stops, selectedStopId, onSelectStop, height = 360 }:
       }`}
       style={{ height: expanded ? 560 : height }}
     >
-      <div ref={mapContainerRef} className="w-full h-full" />
+      <div ref={mapContainerRef} className="w-full h-full min-h-[280px]" style={{ minHeight: '280px' }} />
 
       {/* Top Left Floating Pills (Recenter & Info) */}
       <div className="absolute top-3 left-3 z-[1000] flex items-center gap-2">
