@@ -777,77 +777,349 @@ RULES:
   }
 }
 
+const SEED_ACTIVITIES = [
+  {
+    id: 'torrey-pines-gliderport',
+    title: 'Torrey Pines Gliderport Sunset Overlook',
+    description:
+      'Watch paragliders soar off 300-foot seaside sea cliffs over Black’s Beach during golden hour sunset.',
+    estimatedCostPerPerson: 0,
+    costBreakdown: 'Free public parking and bluff walking trail access',
+    locationName: 'Torrey Pines Gliderport',
+    address: '2800 Torrey Pines Scenic Dr, La Jolla, CA 92037',
+    distanceFromCampus: '1.2 miles north of UCSD',
+    operatingHours: 'Open daily until dark',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://www.flygliderport.com',
+    imageUrl: ACCURATE_IMAGES.gliderport,
+    geminiScoutNotes: 'Best at sunset. Dress warmly for coastal ocean breeze.',
+    verificationStatus: 'verified_live',
+    vibes: ['Adventurous', 'Chill'],
+    tags: ['views', 'free', 'ocean'],
+  },
+  {
+    id: 'la-jolla-cove-sunset',
+    title: 'La Jolla Cove & Sea Lions',
+    description:
+      "Iconic sea lion colony at one of California's most beautiful coves. Watch them bark, fight, and nap on the rocks while waves crash below stunning cliffs.",
+    estimatedCostPerPerson: 0,
+    costBreakdown: 'Completely free. Parking nearby is $2/hr at street meters.',
+    locationName: 'La Jolla Cove',
+    address: '1100 Coast Blvd, La Jolla, CA 92037',
+    distanceFromCampus: '2.5 miles south of UCSD',
+    operatingHours: 'Always open (illuminated walkway at night)',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://www.sandiego.org/lifeguards/beaches/cove',
+    imageUrl: ACCURATE_IMAGES.cove,
+    geminiScoutNotes: 'Free street parking along Coast Blvd after 6 PM.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chill', 'Romantic'],
+    tags: ['outdoor', 'free', 'wildlife', 'coastal'],
+  },
+  {
+    id: 'windansea-beach',
+    title: 'Windansea Beach & Surf Shack',
+    description:
+      'Historic surf break with a legendary palm-frond shack built right on rocky sandstone cliffs. Watch surfers ride waves against dramatic sunset skies.',
+    estimatedCostPerPerson: 0,
+    costBreakdown: 'Completely free public beach. Free street parking along Neptune Pl.',
+    locationName: 'Windansea Beach',
+    address: '6800 Neptune Pl, La Jolla, CA 92037',
+    distanceFromCampus: '3.8 miles south of UCSD',
+    operatingHours: 'Always open (best at golden hour & dusk)',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://www.sandiego.org',
+    imageUrl: ACCURATE_IMAGES.beach,
+    geminiScoutNotes: 'Sit on the flat sandstone rocks by the surf shack for sunset.',
+    verificationStatus: 'verified_live',
+    vibes: ['Adventurous', 'Romantic', 'Chill'],
+    tags: ['outdoor', 'free', 'beach', 'sunset'],
+  },
+  {
+    id: 'balboa-park-lights',
+    title: 'Balboa Park Plaza de Panama Evening Walk',
+    description:
+      'Experience Balboa Park’s magnificent Spanish colonial architecture and reflecting lily pond illuminated against the night sky. Majestic, atmospheric, and 100% free.',
+    estimatedCostPerPerson: 0,
+    costBreakdown: 'Free admission to outdoor park grounds, arcades, and plazas.',
+    locationName: 'Plaza de Panama & El Prado, Balboa Park',
+    address: '1450 El Prado, San Diego, CA 92101',
+    distanceFromCampus: '11 miles south of UCSD',
+    operatingHours: 'Park grounds open 24/7 (illuminated after dark)',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://balboapark.org',
+    imageUrl: ACCURATE_IMAGES.balboa,
+    geminiScoutNotes: 'The illuminated fountain at Plaza de Panama and botanical pond look incredible after dark.',
+    verificationStatus: 'verified_live',
+    vibes: ['Romantic', 'Chill', 'Adventurous'],
+    tags: ['historic', 'free', 'architecture', 'evening'],
+  },
+  {
+    id: 'somisomi-convoy',
+    title: 'SomiSomi Convoy Taiyaki Soft Serve',
+    description:
+      'Warm fish-shaped waffle cones filled with Nutella or taro and swirled with ube and milk soft serve.',
+    estimatedCostPerPerson: 6.5,
+    costBreakdown: 'Ah-Boong waffle cone with soft serve ($6.50)',
+    locationName: 'SomiSomi — Convoy St',
+    address: '4620 Convoy St, San Diego, CA 92111',
+    distanceFromCampus: '7.5 miles east of UCSD',
+    operatingHours: 'Daily until 10:30 PM',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://www.somisomi.com',
+    imageUrl: ACCURATE_IMAGES.gelato,
+    geminiScoutNotes: 'Great late-night dessert in Convoy.',
+    verificationStatus: 'verified_live',
+    vibes: ['Adventurous', 'Chill', 'Social'],
+    tags: ['dessert', 'boba', 'asian-food'],
+  },
+  {
+    id: 'bobboi-gelato-night',
+    title: 'Bobboi Natural Gelato & Prospect St Stroll',
+    description:
+      'Artisan organic gelato crafted fresh daily with local California fruit and organic milk. Stroll down Prospect St overlooking the moonlit ocean cove.',
+    estimatedCostPerPerson: 7,
+    costBreakdown: 'Single cup/cone of organic artisan gelato ~$6.50–$7.50.',
+    locationName: 'Bobboi Natural Gelato',
+    address: '8008 Girard Ave, La Jolla, CA 92037',
+    distanceFromCampus: '2.9 miles south of UCSD',
+    operatingHours: 'Mon–Thu 11am–9pm, Fri–Sat 11am–10pm, Sun 11am–9pm',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://bobboi.com',
+    imageUrl: ACCURATE_IMAGES.gelato,
+    geminiScoutNotes: 'Try the Mediterranean Pistachio or Bacio. Open late on weekend nights.',
+    verificationStatus: 'verified_live',
+    vibes: ['Romantic', 'Chill'],
+    tags: ['dessert', 'gelato', 'romantic', 'evening'],
+  },
+  {
+    id: 'taco-stand-la-jolla',
+    title: 'The Taco Stand La Jolla',
+    description:
+      'Legit Mexican street tacos in the heart of La Jolla. Hand-pressed tortillas, charred al pastor, and the best horchata in San Diego.',
+    estimatedCostPerPerson: 9,
+    costBreakdown: '3 tacos ~$7–9, drinks $2–3.',
+    locationName: 'The Taco Stand',
+    address: '621 Pearl St, La Jolla, CA 92037',
+    distanceFromCampus: '2.8 miles south of UCSD',
+    operatingHours: 'Daily 10am–10pm',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://www.letstaco.com',
+    imageUrl: ACCURATE_IMAGES.tacos,
+    geminiScoutNotes: 'Get the al pastor and carne asada. Street parking on Pearl St.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chaotic', 'Chill', 'Social'],
+    tags: ['food', 'tacos', 'casual'],
+  },
+  {
+    id: 'meetfresh-boba-convoy',
+    title: 'Meet Fresh & Boba Bar Convoy',
+    description:
+      'Authentic Taiwanese shaved ice with taro balls, herbal grass jelly, and craft milk teas. Perfect late-night dessert stop.',
+    estimatedCostPerPerson: 9,
+    costBreakdown: 'Signature taro ball shaved ice or boba drink ~$7–10.',
+    locationName: 'Meet Fresh Convoy',
+    address: '4344 Convoy St, San Diego, CA 92111',
+    distanceFromCampus: '7.5 miles east of UCSD',
+    operatingHours: 'Open until 11:30 PM (Late night dessert)',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://meetfresh.us',
+    imageUrl: ACCURATE_IMAGES.boba,
+    geminiScoutNotes: 'Open late on Convoy until 11:30 PM. Get the Icy Grass Jelly #1 with boba.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chill', 'Chaotic', 'Social'],
+    tags: ['dessert', 'boba', 'late-night'],
+  },
+  {
+    id: 'spot-ktv-convoy',
+    title: 'Spot KTV Private Karaoke Room',
+    description:
+      'Rent a private neon karaoke room with thousands of songs, disco lights, and late-night snacks. Split with friends for an epic, budget-friendly night.',
+    estimatedCostPerPerson: 12,
+    costBreakdown: 'Private room rate ($60/hr) split 5 ways is $12/person.',
+    locationName: 'Spot KTV — Convoy Plaza',
+    address: '4344 Convoy St, San Diego, CA 92111',
+    distanceFromCampus: '7.2 miles east of UCSD',
+    operatingHours: 'Daily 4pm–2am',
+    ageRestriction: 'All ages',
+    sourceUrl: 'https://findkaraoke.net/san-diego',
+    imageUrl: ACCURATE_IMAGES.karaoke,
+    geminiScoutNotes: 'Best value when going in a group of 4 to 6 people. Great sound system and private rooms.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chaotic', 'Adventurous', 'Social'],
+    tags: ['karaoke', 'nightlife', 'music', 'convoy'],
+  },
+  {
+    id: 'round1-arcade',
+    title: 'Round 1 Bowling & Amusement UTC',
+    description:
+      'Massive arcade featuring Japanese rhythm games, UFO claw machines, billiards, and boutique bowling directly adjacent to campus.',
+    estimatedCostPerPerson: 15,
+    costBreakdown: 'Game card with credits ~$10–15 or split bowling lane.',
+    locationName: 'Round 1 UTC',
+    address: '4545 La Jolla Village Dr, San Diego, CA 92122',
+    distanceFromCampus: '1.8 miles from campus',
+    operatingHours: 'Daily 10:00 AM–2:00 AM (Late night)',
+    ageRestriction: 'All ages (18+ after 10 PM without guardian)',
+    sourceUrl: 'https://www.round1usa.com',
+    imageUrl: ACCURATE_IMAGES.arcade,
+    geminiScoutNotes: 'Take the Blue Line trolley directly to UTC station. The crane games and Taiko drums are a blast.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chaotic', 'Adventurous'],
+    tags: ['arcade', 'games', 'entertainment', 'utc'],
+  },
+  {
+    id: 'comedy-store-lajolla',
+    title: 'The Comedy Store La Jolla',
+    description:
+      'Historic standup comedy club in downtown La Jolla showcasing touring headliners and rising local comics.',
+    estimatedCostPerPerson: 20,
+    costBreakdown: 'Show tickets typically $15–20. Two item minimum per person.',
+    locationName: 'The Comedy Store',
+    address: '916 Pearl St, La Jolla, CA 92037',
+    distanceFromCampus: '2.8 miles south of UCSD',
+    operatingHours: 'Evenings 7:00 PM & 9:30 PM showtimes',
+    ageRestriction: '21+ (some 18+ shows)',
+    sourceUrl: 'https://thecomedystore.com/la-jolla',
+    imageUrl: ACCURATE_IMAGES.comedy,
+    geminiScoutNotes: 'Book online beforehand to guarantee seating. Pearl St parking is free after 6 PM.',
+    verificationStatus: 'verified_live',
+    vibes: ['Chaotic', 'Romantic'],
+    tags: ['comedy', 'entertainment', 'nightlife'],
+  },
+];
+
+function getFallbackActivities(budget: number, vibe: string) {
+  const exact = SEED_ACTIVITIES.filter(
+    (a) => a.estimatedCostPerPerson <= budget && a.vibes.includes(vibe)
+  );
+  if (exact.length >= 3) {
+    return exact.slice(0, 3);
+  }
+  const others = SEED_ACTIVITIES.filter(
+    (a) => a.estimatedCostPerPerson <= budget && !exact.some((e) => e.id === a.id)
+  );
+  return [...exact, ...others].slice(0, 3);
+}
+
 async function handleDiscover(request: Request, env: Env): Promise<Response> {
   try {
     const body = (await request.json()) as any;
     const location = (body?.location || 'UCSD / La Jolla, CA').slice(0, 100);
     const budget = Number(body?.budget ?? 15);
     const vibe = (body?.vibe || 'Adventurous').slice(0, 50);
+    const groupSize = Number(body?.groupSize ?? 3);
 
-    const fallbackActivities = [
-      {
-        id: 'act-gliderport',
-        title: 'Torrey Pines Gliderport Sunset Overlook',
-        description:
-          'Watch paragliders soar off 300-foot seaside sea cliffs over Black’s Beach during golden hour sunset.',
-        estimatedCostPerPerson: 0,
-        costBreakdown: 'Free public parking and bluff walking trail access',
-        locationName: 'Torrey Pines Gliderport',
-        address: '2800 Torrey Pines Scenic Dr, La Jolla, CA 92037',
-        distanceFromCampus: '1.2 miles north of UCSD',
-        operatingHours: 'Open daily until dark',
-        ageRestriction: 'All ages',
-        sourceUrl: 'https://www.flygliderport.com',
-        imageUrl: ACCURATE_IMAGES.gliderport,
-        geminiScoutNotes: 'Best at sunset. Dress warmly for coastal ocean breeze.',
-        verificationStatus: 'verified_live',
-        vibes: [vibe],
-        tags: ['views', 'free', 'ocean'],
-      },
-      {
-        id: 'act-cove',
-        title: 'La Jolla Cove & Seal Rock Night Walk',
-        description:
-          'Listen to wild sea lions barking along the rocks and take a moonlit stroll along the seaside cliffs.',
-        estimatedCostPerPerson: 0,
-        costBreakdown: 'Free 24/7 marine sanctuary & coastal boardwalk',
-        locationName: 'La Jolla Cove',
-        address: '1100 Coast Blvd, La Jolla, CA 92037',
-        distanceFromCampus: '3.5 miles south of UCSD',
-        operatingHours: 'Open 24/7',
-        ageRestriction: 'All ages',
-        sourceUrl: 'https://www.sandiego.org',
-        imageUrl: ACCURATE_IMAGES.cove,
-        geminiScoutNotes: 'Free street parking along Coast Blvd after 6 PM.',
-        verificationStatus: 'verified_live',
-        vibes: [vibe],
-        tags: ['wildlife', 'nature', 'free'],
-      },
-      {
-        id: 'act-somisomi',
-        title: 'SomiSomi Convoy Taiyaki Soft Serve',
-        description:
-          'Warm fish-shaped waffle cones filled with Nutella or taro and swirled with ube and milk soft serve.',
-        estimatedCostPerPerson: 6.5,
-        costBreakdown: 'Ah-Boong waffle cone with soft serve ($6.50)',
-        locationName: 'SomiSomi — Convoy St',
-        address: '4620 Convoy St, San Diego, CA 92111',
-        distanceFromCampus: '7.5 miles east of UCSD',
-        operatingHours: 'Daily until 10:30 PM',
-        ageRestriction: 'All ages',
-        sourceUrl: 'https://www.somisomi.com',
-        imageUrl: ACCURATE_IMAGES.gelato,
-        geminiScoutNotes: 'Great late-night dessert in Convoy.',
-        verificationStatus: 'verified_live',
-        vibes: [vibe],
-        tags: ['dessert', 'boba', 'asian-food'],
-      },
-    ];
+    const now = new Date();
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const currentDayOfWeek = dayNames[now.getDay()];
 
+    if (env.GEMINI_API_KEY) {
+      try {
+        const budgetLabel = budget === 0 ? 'completely free ($0)' : `strictly under or equal to $${budget} per person`;
+        const prompt = `You are Gemini, BrokeTonight's elite AI activity scout for college students in ${location}.
+TODAY IS: ${currentDayOfWeek} evening/night.
+User preferences:
+- Location: ${location}
+- Budget: ${budgetLabel}
+- Vibe: ${vibe}
+- Group size: ${groupSize} friends
+
+RULES:
+1. Recommend exactly 3 diverse, real activities in or near ${location} matching the ${vibe} vibe.
+2. STRICT BUDGET LIMIT: Each activity's estimatedCostPerPerson MUST be <= ${budget}. If budget is $0, estimatedCostPerPerson MUST be 0.
+3. OPERATING HOURS: Must be confirmed OPEN on ${currentDayOfWeek} evening/night. Do not recommend daytime-only places that close at 5 PM.
+4. VARIETY: At most 1 main meal/restaurant. The others should be dessert/boba/drinks, games/entertainment/arcade/comedy, or scenic vistas/walks/landmarks.
+
+Return ONLY JSON matching:
+{
+  "query_summary": "Top picks near ${location} for ${vibe} vibe under $${budget}/person",
+  "activities": [
+    {
+      "id": string,
+      "title": string,
+      "description": string,
+      "estimatedCostPerPerson": number,
+      "costBreakdown": string,
+      "locationName": string,
+      "address": string,
+      "distanceFromCampus": string,
+      "operatingHours": string,
+      "ageRestriction": string,
+      "sourceUrl": string,
+      "geminiScoutNotes": string
+    }
+  ]
+}`;
+
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${env.GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              generationConfig: { responseMimeType: 'application/json' },
+              contents: [{ parts: [{ text: prompt }] }],
+            }),
+            signal: AbortSignal.timeout(12000),
+          }
+        );
+
+        if (geminiRes.ok) {
+          const gData = (await geminiRes.json()) as any;
+          const text = gData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) {
+            const parsed = JSON.parse(text);
+            if (Array.isArray(parsed?.activities) && parsed.activities.length > 0) {
+              const formatted = parsed.activities
+                .filter((a: any) => Number(a.estimatedCostPerPerson ?? 0) <= (budget === 0 ? 0 : budget))
+                .slice(0, 3)
+                .map((a: any, idx: number) => ({
+                  id: a.id || `act-live-${Date.now()}-${idx}`,
+                  title: a.title,
+                  description: a.description,
+                  estimatedCostPerPerson: Number(a.estimatedCostPerPerson ?? 0),
+                  costBreakdown: a.costBreakdown || (budget === 0 ? 'Free ($0)' : `$${a.estimatedCostPerPerson}`),
+                  locationName: a.locationName || location,
+                  address: a.address || `${location}`,
+                  distanceFromCampus: a.distanceFromCampus || 'Nearby',
+                  operatingHours: a.operatingHours || 'Open tonight',
+                  ageRestriction: a.ageRestriction || 'All ages',
+                  sourceUrl: a.sourceUrl || 'https://www.sandiego.org',
+                  imageUrl: getAccurateImageForActivity(a.title, a.description || ''),
+                  geminiScoutNotes: a.geminiScoutNotes || `Verified within $${budget} budget for ${vibe} night out.`,
+                  verificationStatus: 'verified_live',
+                  vibes: [vibe],
+                  tags: [vibe.toLowerCase(), 'scouted-live'],
+                }));
+
+              if (formatted.length > 0) {
+                return jsonResponse(
+                  {
+                    activities: formatted,
+                    querySummary: parsed.query_summary || `Top picks near ${location} for ${vibe} vibe under $${budget}/person`,
+                    citations: ['https://www.sandiego.org', 'https://eatconvoy.com'],
+                    isLiveData: true,
+                    fetchedAt: new Date().toISOString(),
+                  },
+                  200,
+                  request
+                );
+              }
+            }
+          }
+        }
+      } catch (geminiErr) {
+        console.warn('Discover Gemini call failed, using fallback catalog:', geminiErr);
+      }
+    }
+
+    // Dynamic Seed Catalog Fallback matching requested budget and vibe
+    const fallbacks = getFallbackActivities(budget, vibe);
     return jsonResponse(
       {
-        activities: fallbackActivities.filter((a) => a.estimatedCostPerPerson <= budget),
-        querySummary: `Activities for ${location} (${vibe}, $${budget})`,
+        activities: fallbacks,
+        querySummary: `Top curated picks for ${location} (${vibe}, $${budget})`,
         citations: ['https://www.sandiego.org', 'https://www.convoydistrict.com'],
         isLiveData: false,
         fetchedAt: new Date().toISOString(),
