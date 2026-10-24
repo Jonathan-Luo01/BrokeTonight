@@ -1,0 +1,21 @@
+{
+  "name": "broketonight",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:all",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npx tsx index.ts",
+    "dev:all": "concurrently -n \"server,client\" -c \"blue,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "cd client && npm run build",
+    "start": "npm run dev:all",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.3",
+    "concurrently": "^9.0.0"
+  }
+}
