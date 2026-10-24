@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
-export default defineConfig({
-  base: process.env.VITE_BASE_PATH || (process.env.GITHUB_PAGES ? '/BrokeTonight/' : '/'),
+export default defineConfig(({ mode }) => ({
+  base: process.env.VITE_BASE_PATH || (mode === 'development' ? '/' : '/BrokeTonight/'),
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -16,4 +16,4 @@ export default defineConfig({
       '/api': 'http://localhost:3001'
     }
   }
-})
+}))
