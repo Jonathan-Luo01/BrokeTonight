@@ -53,15 +53,12 @@ export function OpenUIMap({ stops, selectedStopId, onSelectStop, height = 360 }:
       // Attribution control without the Leaflet Ukraine flag prefix
       L.control.attribution({ prefix: false }).addTo(map);
 
-      // Fast, mobile-compatible OpenStreetMap / CARTO Voyager tiles with Retina support
-      L.tileLayer(
-        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-        {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: 'abcd',
-          maxZoom: 19,
-        }
-      ).addTo(map);
+      // 100% Free OpenStreetMap tiles (no API key required, no watermarks, full global coverage)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
 
       mapInstanceRef.current = map;
     }
